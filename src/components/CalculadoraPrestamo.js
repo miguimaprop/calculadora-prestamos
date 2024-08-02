@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
 
+const monedas = [
+    { code: 'USD', symbol: '$', name: 'Dólar Estadounidense' },
+    { code: 'EUR', symbol: '€', name: 'Euro' }
+];
+
 function CalculadoraPrestamo() {
     const [monto, setMonto] = useState('');
     const [tasa, setTasa] = useState('');
     const [plazo, setPlazo] = useState('');
+    const [moneda, setMoneda] = useState('USD');
     const [resultado, setResultado] = useState(null);
 
     const calcularPrestamo = (monto, tasaAnual, plazoAnios) => {
@@ -85,14 +91,27 @@ function CalculadoraPrestamo() {
                         required
                     />
                 </div>
+                <div>
+                    <label>Moneda:</label>
+                    <select
+                        value={moneda}
+                        onChange={(e) => setMoneda(e.target.value)}
+                    >
+                        {monedas.map((m) => (
+                            <option key={m.code} value={m.code}>
+                                {m.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
                 <button type="submit">Calcular</button>
             </form>
 
             {resultado && (
                 <div>
                     <h3>Resultados:</h3>
-                    <p>Pago Mensual: ${resultado.pagoMensual}</p>
-                    <p>Interés Total: ${resultado.interesTotal}</p>
+                    <p>Pago Mensual: {monedas.find(m => m.code === moneda).symbol}{resultado.pagoMensual}</p>
+                    <p>Interés Total: {monedas.find(m => m.code === moneda).symbol}{resultado.interesTotal}</p>
 
                     <h4>Tabla de Amortización:</h4>
                     <table>
@@ -108,9 +127,9 @@ function CalculadoraPrestamo() {
                             {resultado.amortizacion.map((item) => (
                                 <tr key={item.mes}>
                                     <td>{item.mes}</td>
-                                    <td>${item.interesPago}</td>
-                                    <td>${item.principalPago}</td>
-                                    <td>${item.saldoRestante}</td>
+                                    <td>{monedas.find(m => m.code === moneda).symbol}{item.interesPago}</td>
+                                    <td>{monedas.find(m => m.code === moneda).symbol}{item.principalPago}</td>
+                                    <td>{monedas.find(m => m.code === moneda).symbol}{item.saldoRestante}</td>
                                 </tr>
                             ))}
                         </tbody>
